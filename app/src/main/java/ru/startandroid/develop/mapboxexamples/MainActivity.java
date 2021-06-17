@@ -11,11 +11,15 @@ import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.geojson.Polygon;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.MapboxMapOptions;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String SOURCE_ID = "SOURCE_ID";
     private static final String ICON_ID = "ICON_ID";
     private static final String LAYER_ID = "LAYER_ID";
+    private static final String PRECISION_6 = "0";
 
     String polygonFeatureJson = "{" +
             "\"type\": \"Feature\"," +
@@ -76,19 +81,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Mapbox.getInstance(this, getString(R.string.access_token));
 
-        setContentView(R.layout.activity_main);
+        /*setContentView(R.layout.activity_main);
 
         mapView = findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
-        /*mapView.getMapAsync(mapboxMap -> mapboxMap.setStyle(Style.MAPBOX_STREETS,
-                style -> {
+        mapView.getMapAsync(this);*/
 
-            }));*/
-        mapView.getMapAsync(this);
+        // Динамическое создание карты
+        MapboxMapOptions options = MapboxMapOptions.createFromAttributes(this, null)
+                .camera(new CameraPosition.Builder()
+                .target(new LatLng(43.7383, 7.4094))
+                .zoom(12)
+                .build());
+
+        mapView = new MapView(this, options);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull  MapboxMap mapboxMap) {
+                mapboxMap.setStyle(Style.OUTDOORS, new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull  Style style) {
+
+                    }
+                });
+            }
+        });
+        setContentView(mapView);
     }
 
     @Override
     public void onMapReady(@NonNull  MapboxMap mapboxMap) {
+       // ПРимер создания трех маркерных точек
         /*List<Feature> symbolLayerIconFeatureList = new ArrayList<>();
         symbolLayerIconFeatureList.add(Feature.fromGeometry(Point.fromLngLat(-57.225365, -33.213144)));
         symbolLayerIconFeatureList.add(Feature.fromGeometry(Point.fromLngLat(-54.14164, -33.981818)));
@@ -109,7 +133,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });*/
-        mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+
+        // Пример создания многоугольника
+         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull  Style style) {
                 style.addSource(new GeoJsonSource(SOURCE_ID,
@@ -120,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 );
             }
         });
+
     }
 
     @Override

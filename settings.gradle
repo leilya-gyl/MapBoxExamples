@@ -1,2 +1,3 @@
 rootProject.name = "MapBoxExamples"
 include ':app'
+include ':supportmapfragment'

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SupportMapFragment</string>
+    <string name="fragment_in_card_below">Fragment in card</string>
+    <string name="access_token">pk.eyJ1IjoibGVpbHlhMjUiLCJhIjoiY2twbWJocDNnMHgxMTJybzFjeTY0MmF1MCJ9.5sQiPmfwGGCYEHPiv68W-Q</string>
+</resources>
